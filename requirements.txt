@@ -1,0 +1,6 @@
+numpy
+pillow
+faster-whisper
+playwright
+onnxruntime
+opencv-python-headless

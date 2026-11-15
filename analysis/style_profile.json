@@ -1,0 +1,51 @@
+{
+  "format": {
+    "width": 720,
+    "height": 1280,
+    "fps": 30.0
+  },
+  "grade": {
+    "mean": [
+      98.41,
+      89.65,
+      84.37
+    ],
+    "std": [
+      95.59,
+      91.75,
+      89.56
+    ],
+    "saturation": 69.75,
+    "enabled": false,
+    "_note": "Desligado: as referências têm fundos/cenários diferentes (claro vs escuro, laranja vs azul) e muito motion graphics; a média global de cor não representa o grade do rosto. Ligue manualmente só se fornecer referência de apenas talking-head."
+  },
+  "audio": {
+    "lufs": -14.1,
+    "true_peak": -1.5
+  },
+  "pacing": {
+    "avg_shot_seconds": 7.02,
+    "cuts_per_minute": 9.2
+  },
+  "captions": {
+    "enabled": true,
+    "font_name": "Inter ExtraBold",
+    "font_file": "Inter-ExtraBold.otf",
+    "bold": false,
+    "uppercase": false,
+    "primary_color": "#FFFFFF",
+    "outline_color": "#000000",
+    "outline_width_ratio": 0.0008,
+    "shadow": 2,
+    "highlight_color": null,
+    "words_per_caption": 3,
+    "y_center_ratio": 0.76,
+    "font_size_ratio": 0.041,
+    "_verified": true,
+    "letter_spacing_ratio": -0.0012,
+    "_note": "Medido visualmente nos 2 vídeos: branca, sem contorno, sombra suave, centro a 75% da altura, 2-4 palavras por vez. Fonte original NÃO identificada com certeza (mais pesada/apertada que Inter); Inter ExtraBold é aproximação.",
+    "max_chars": 18,
+    "shadow_alpha": "58",
+    "blur": 0
+  }
+}

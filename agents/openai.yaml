@@ -1,0 +1,7 @@
+interface:
+  display_name: "SKILL RECORTE RETANGULO"
+  short_description: "Edita vídeos verticais com recorte em cartão e legendas"
+  default_prompt: "Use $skill-recorte-retangulo para editar meu vídeo vertical com recorte, legendas e motion graphics."
+  brand_color: "#FFD21F"
+policy:
+  allow_implicit_invocation: true

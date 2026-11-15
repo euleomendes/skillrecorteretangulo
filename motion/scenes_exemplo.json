@@ -1,0 +1,10 @@
+[
+  {
+    "segs": [0],
+    "layout": "light",
+    "text": "Tudo começa com uma ideia.",
+    "title": "Tudo começa|com uma {ideia}",
+    "titleY": 181,
+    "pills": [{"text": "Primeiro passo", "emoji": "💡", "style": "y", "x": 62, "y": 410}]
+  }
+]

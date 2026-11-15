@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+models/
+output/
+referencias/
+analysis/motion_*.png
+analysis/*_contact.jpg
+assets/fonts/*.otf
+assets/fonts/*.ttf
