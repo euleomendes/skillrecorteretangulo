@@ -61,13 +61,25 @@ item(model.is_file() and model.stat().st_size == 175997641, "modelo de recorte U
 item((ROOT / "analysis" / "style_profile.json").is_file(), "perfil de estilo (analysis/style_profile.json)",
      "restaure o arquivo do repositório")
 
+kit = ROOT / "sfx" / "real" / "manifest.json"
+if kit.is_file():
+    rows = json.loads(kit.read_text())
+    miss = [r for r in rows if not (kit.parent / r["file"]).is_file()]
+    item(not miss, f"kit de gravações reais ({len(rows) - len(miss)}/{len(rows)})", "restaure sfx/real do repositório")
+else:
+    item(False, "kit de gravações reais", "restaure sfx/real do repositório")
+
+logos = list((ROOT / "assets" / "logos").glob("*.svg"))
+item(len(logos) >= 30 and (ROOT / "assets" / "logos" / "logos.json").is_file(), f"logos oficiais ({len(logos)})",
+     "restaure assets/logos do repositório")
+
 man = ROOT / "sfx" / "realsfx" / "manifest.json"
 if man.is_file():
     assets = json.loads(man.read_text())["assets"]
     missing = [a for a in assets if not (ROOT / "sfx" / "realsfx" / a["files"]["mp3"]["path"]).is_file()]
-    item(not missing, f"sons Real SFX ({len(assets) - len(missing)}/{len(assets)})", "restaure sfx/realsfx do repositório")
+    item(not missing, f"sons uisfx sintetizados ({len(assets) - len(missing)}/{len(assets)})", "restaure sfx/realsfx do repositório")
 else:
-    item(False, "sons Real SFX", "restaure sfx/realsfx do repositório")
+    item(False, "sons uisfx sintetizados", "restaure sfx/realsfx do repositório")
 
 print("\nTudo pronto." if ok else "\nCorrija os itens marcados com ✗ e rode de novo.")
 sys.exit(0 if ok else 1)

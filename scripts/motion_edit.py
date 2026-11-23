@@ -16,6 +16,20 @@ import apply_edit as AE
 
 FPS = 30
 MODEL = ROOT / "models" / "u2net_human_seg.onnx"
+IMG_EXT = re.compile(r"\.(jpe?g|png|webp|gif|svg)$", re.I)
+
+
+def load_logos():
+    """Logos oficiais (Simple Icons, CC0) de assets/logos: {nome: {p: path SVG, hex, title}}."""
+    folder = ROOT / "assets" / "logos"
+    meta = json.loads((folder / "logos.json").read_text()) if (folder / "logos.json").is_file() else {}
+    out = {}
+    for f in sorted(folder.glob("*.svg")):
+        m = re.search(r'<path[^>]*\sd="([^"]+)"', f.read_text())
+        if m:
+            info = meta.get(f.stem, {})
+            out[f.stem] = {"p": m.group(1), "hex": info.get("hex", "#0d0d0d"), "title": info.get("title", f.stem)}
+    return out
 
 
 def make_cutouts(frames_dir, cuts_dir, idxs):
@@ -103,15 +117,15 @@ def auto_geom(frames_dir, n_frames, samples=7):
     s = clamp(max(.92, 820 / max(1280 - ht, 1)), .92, 1.5)
     card = window(83, 666, 554, 700, s, 277, None, 28, 2.5)
     card["oy"] = round(clamp(206 + ht * s, 0, 666 + 1280 * s - 1280), 1)
-    avatar_s = clamp(100 / hw, .2, .7)
+    avatar_s = clamp(144 / hw, .25, .9)
     pip_s = clamp(118 / hw, .35, 1)
     geom = {
         "card": card,
-        "avatar": window(552, 150, 128, 128, avatar_s, 64, 64, 64, 3),
+        "avatar": window(500, 126, 184, 184, avatar_s, 92, 92, 92, 3.5),
         "pip": window(400, 330, 280, 350, pip_s, 140, 150, 26, 2.5),
         "pipL": window(40, 330, 280, 350, pip_s, 140, 150, 26, 2.5),
     }
-    geom["none"] = {**geom["avatar"], "x": 616, "y": 214, "w": 0, "h": 0, "r": 0, "bw": 0}
+    geom["none"] = {**geom["avatar"], "x": 592, "y": 218, "w": 0, "h": 0, "r": 0, "bw": 0}
     print(f"Enquadramento automático: topo da cabeça y={ht:.0f}, centro x={cx:.0f}, largura {hw:.0f}px")
     return geom
 
@@ -282,16 +296,36 @@ def main():
         if a.max_frames:
             n = min(n, a.max_frames)
 
-        # imagens das cenas (caminhos relativos ao scenes.json)
+        # imagens das cenas (caminhos relativos ao scenes.json): images[].src,
+        # card.avatar e card.posts[] do celular
         (work / "img").mkdir()
-        for si, sc in enumerate(scenes):
-            for mi, m in enumerate(sc.get("images", [])):
-                srcp = (a.scenes.parent / m["src"]).expanduser().resolve()
-                if not srcp.exists():
-                    ap.error(f"Imagem não encontrada: {srcp}")
-                dst = f"img/{si}_{mi}{srcp.suffix.lower()}"
-                shutil.copy(srcp, work / dst)
-                m["src"] = dst
+        copied = {}
+
+        def local(path):
+            srcp = (a.scenes.parent / path).expanduser().resolve()
+            if not srcp.is_file():
+                ap.error(f"Imagem não encontrada: {srcp}")
+            if srcp not in copied:
+                copied[srcp] = f"img/{len(copied)}{srcp.suffix.lower()}"
+                shutil.copy(srcp, work / copied[srcp])
+            return copied[srcp]
+
+        for sc in scenes:
+            for m in sc.get("images", []):
+                m["src"] = local(m["src"])
+            card = sc.get("card") or {}
+            if card.get("avatar"):
+                card["avatar"] = local(card["avatar"])
+            if card.get("posts"):
+                card["posts"] = [local(p) if IMG_EXT.search(p) else p for p in card["posts"]]
+        logos = load_logos()
+        used = {x.get("name") for sc in scenes for x in sc.get("logos", [])} | \
+               {x.get("logo") for sc in scenes for x in sc.get("pills", [])} | \
+               {x.get("logo") for sc in scenes for x in ((sc.get("card") or {}).get("rows") or [])} | \
+               {x.get("logo") for sc in scenes for x in ((sc.get("card") or {}).get("notifs") or
+                                                          (sc.get("card") or {}).get("items") or [])}
+        for name in sorted(n for n in used if n and n not in logos):
+            print(f"Aviso: logo '{name}' não existe em assets/logos (veja `python3 scripts/images.py logos`).")
 
         # página
         sample_t = [float(x) for x in a.sample.split(",")] if a.sample else []
@@ -302,7 +336,8 @@ def main():
         html = (ROOT / "motion" / "template.html").read_text()
         dump = lambda v: json.dumps(v, ensure_ascii=False).replace("<", r"\u003c")
         html = html.replace("/*SCENES*/[]", dump(scenes)).replace("/*CONFIG*/{}", dump(cfg)) \
-                   .replace("/*TOTAL*/10", f"{tinfo['duration']:.3f}")
+                   .replace("/*TOTAL*/10", f"{tinfo['duration']:.3f}") \
+                   .replace("/*LOGOS*/{}", dump(logos))
         (work / "page.html").write_text(html)
 
         shots = work / "shots"; shots.mkdir()
@@ -356,7 +391,9 @@ def main():
             effects = work / "effects.wav"
             build_track(a.sfx, effects, tinfo["duration"])
             cmd = cmd[:-4] + ["-i", str(effects), "-filter_complex",
-                              f"[1:a][2:a]amix=inputs=2:duration=first:normalize=0,{loudness}[a]",
+                              "[1:a]aformat=channel_layouts=stereo,asplit=2[v][vk];"
+                              "[2:a][vk]sidechaincompress=threshold=0.035:ratio=2.5:attack=10:release=260[s];"
+                              f"[v][s]amix=inputs=2:duration=first:normalize=0,{loudness}[a]",
                               "-map", "0:v", "-map", "[a]"]
         else:
             cmd += ["-af", loudness]

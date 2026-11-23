@@ -5,10 +5,11 @@ Skill para editar vídeos falados verticais (Reels, Shorts, TikTok). Faz:
 - cartão arredondado com borda fina e a cabeça saindo por cima, com enquadramento automático;
 - avatar em círculo, PiP e tela cheia;
 - fundo branco pontilhado ou escuro com brilho;
-- motion graphics e prints de tela;
+- motion graphics: celular com perfil animado, notificações, gráfico que se desenha, tipografia cinética, partículas, cursor clicando, marca-texto, punch-in;
+- fotos reais (Wikimedia Commons e Openverse, CC0) e 30 logos oficiais de plataformas;
 - legendas curtas com ênfase em serifa itálica;
 - corte de pausas;
-- efeitos sonoros do Real SFX (uisfx, CC0, inclusos) e do Openverse.
+- efeitos sonoros com gravações reais: kit de 25 sons do Freesound (CC0, incluso) e busca no Openverse; mixagem encaixada pelo pico/ataque, com ducking sob a voz.
 
 Cores do kit de marca: Mandarin Orange `#FD550A`, Forest Green `#015D47` e Crest Yellow `#E0F354`.
 
@@ -60,5 +61,8 @@ cd ~/.claude/skills/skill-recorte-retangulo && git pull && bash scripts/setup.sh
 ## Licenças
 
 - Fontes: Inter e Instrument Serif (OFL); Noto Color Emoji (OFL).
-- Sons do Real SFX/uisfx: CC0 (`sfx/realsfx/LICENSE-AUDIO`).
+- Kit de gravações reais: Freesound, CC0 (`sfx/real/LICENSE-AUDIO`, origem de cada som em `sfx/real/manifest.json`).
+- Sons sintetizados uisfx (opcionais): CC0 (`sfx/realsfx/LICENSE-AUDIO`).
 - Efeitos do Openverse: confira a licença de cada um. CC BY exige crédito.
+- Logos: Simple Icons 16.38.1 (CC0, `assets/logos`). As marcas pertencem aos donos; use só para citar a plataforma.
+- Fotos do Wikimedia Commons e do Openverse: CC0/domínio público por padrão. Com `--allow-cc-by`, dê o crédito indicado.

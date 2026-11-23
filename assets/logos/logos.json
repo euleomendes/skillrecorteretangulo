@@ -1,0 +1,152 @@
+{
+ "android": {
+  "title": "Android",
+  "hex": "#3DDC84",
+  "source": "https://partnermarketinghub.withgoogle.com/brands/android/visual-identity/visual-identity/logo-lock-ups"
+ },
+ "anthropic": {
+  "title": "Anthropic",
+  "hex": "#191919",
+  "source": "https://www.anthropic.com"
+ },
+ "apple": {
+  "title": "Apple",
+  "hex": "#000000",
+  "source": "https://www.apple.com"
+ },
+ "claude": {
+  "title": "Claude",
+  "hex": "#D97757",
+  "source": "https://claude.ai"
+ },
+ "discord": {
+  "title": "Discord",
+  "hex": "#5865F2",
+  "source": "https://discord.com/branding"
+ },
+ "facebook": {
+  "title": "Facebook",
+  "hex": "#0866FF",
+  "source": "https://about.meta.com/brand/resources/facebook/logo"
+ },
+ "figma": {
+  "title": "Figma",
+  "hex": "#F24E1E",
+  "source": "https://www.figma.com/using-the-figma-brand/"
+ },
+ "gmail": {
+  "title": "Gmail",
+  "hex": "#EA4335",
+  "source": "https://fonts.gstatic.com/s/i/productlogos/gmail_2020q4/v8/192px.svg"
+ },
+ "google": {
+  "title": "Google",
+  "hex": "#4285F4",
+  "source": "https://partnermarketinghub.withgoogle.com"
+ },
+ "googlechrome": {
+  "title": "Google Chrome",
+  "hex": "#4285F4",
+  "source": "https://www.google.com/chrome"
+ },
+ "instagram": {
+  "title": "Instagram",
+  "hex": "#FF0069",
+  "source": "https://about.meta.com/brand/resources/instagram"
+ },
+ "linktree": {
+  "title": "Linktree",
+  "hex": "#43E55E",
+  "source": "https://linktr.ee"
+ },
+ "mercadopago": {
+  "title": "Mercado Pago",
+  "hex": "#00B1EA",
+  "source": "https://www.mercadopago.com"
+ },
+ "messenger": {
+  "title": "Messenger",
+  "hex": "#0866FF",
+  "source": "https://about.meta.com/brand/resources/facebook/messenger-icon"
+ },
+ "netflix": {
+  "title": "Netflix",
+  "hex": "#E50914",
+  "source": "https://brand.netflix.com/en/assets/logos"
+ },
+ "notion": {
+  "title": "Notion",
+  "hex": "#000000",
+  "source": "https://www.notion.so"
+ },
+ "nubank": {
+  "title": "Nubank",
+  "hex": "#820AD1",
+  "source": "https://nubank.com.br/en/press/"
+ },
+ "paypal": {
+  "title": "PayPal",
+  "hex": "#002991",
+  "source": "https://www.paypal.com/us"
+ },
+ "pinterest": {
+  "title": "Pinterest",
+  "hex": "#BD081C",
+  "source": "https://business.pinterest.com/en/brand-guidelines"
+ },
+ "pix": {
+  "title": "Pix",
+  "hex": "#77B6A8",
+  "source": "https://www.bcb.gov.br/estabilidadefinanceira/pix"
+ },
+ "shopify": {
+  "title": "Shopify",
+  "hex": "#7AB55C",
+  "source": "https://www.shopify.com/brand-assets"
+ },
+ "snapchat": {
+  "title": "Snapchat",
+  "hex": "#FFFC00",
+  "source": "https://www.snapchat.com/brand-guidelines"
+ },
+ "spotify": {
+  "title": "Spotify",
+  "hex": "#1ED760",
+  "source": "https://developer.spotify.com/documentation/general/design-and-branding/#using-our-logo"
+ },
+ "telegram": {
+  "title": "Telegram",
+  "hex": "#26A5E4",
+  "source": "https://telegram.org/tour/screenshots"
+ },
+ "threads": {
+  "title": "Threads",
+  "hex": "#000000",
+  "source": "https://www.meta.com/brand/resources/instagram/threads"
+ },
+ "tiktok": {
+  "title": "TikTok",
+  "hex": "#000000",
+  "source": "https://tiktok.com"
+ },
+ "twitch": {
+  "title": "Twitch",
+  "hex": "#9146FF",
+  "source": "https://brand.twitch.tv"
+ },
+ "whatsapp": {
+  "title": "WhatsApp",
+  "hex": "#25D366",
+  "source": "https://about.meta.com/brand/resources/whatsapp/whatsapp-brand"
+ },
+ "x": {
+  "title": "X",
+  "hex": "#000000",
+  "source": "https://x.com"
+ },
+ "youtube": {
+  "title": "YouTube",
+  "hex": "#FF0000",
+  "source": "https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors"
+ }
+}
