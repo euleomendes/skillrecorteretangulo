@@ -8,9 +8,14 @@ if ! ffmpeg -hide_banner -filters 2>/dev/null | awk '/[[:space:]]ass[[:space:]]/
   echo 'Instale uma versão do FFmpeg com o filtro ass (libass).' >&2
   exit 1
 fi
+python3 -c 'import sys; sys.exit(sys.version_info < (3, 10))' || { echo "Use Python 3.10 ou mais novo." >&2; exit 1; }
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m playwright install chromium
+if [[ "$(uname)" == "Linux" ]]; then
+  .venv/bin/python -m playwright install --with-deps chromium || .venv/bin/python -m playwright install chromium
+else
+  .venv/bin/python -m playwright install chromium
+fi
 mkdir -p models assets/fonts
 asset_tmp=$(mktemp -d)
 trap 'rm -rf "$asset_tmp"' EXIT
@@ -35,3 +40,10 @@ if [[ ! -s models/u2net_human_seg.onnx ]]; then
   test "$(wc -c < "$tmp" | tr -d " ")" -eq 175997641
   mv "$tmp" models/u2net_human_seg.onnx
 fi
+# emojis: o macOS já tem Apple Color Emoji; nos outros sistemas baixa a Noto Color Emoji (OFL)
+if [[ "$(uname)" != "Darwin" && ! -s assets/fonts/NotoColorEmoji-Regular.ttf ]]; then
+  curl -fLsS --retry 2 -o "$asset_tmp/emoji.ttf" \
+    https://raw.githubusercontent.com/google/fonts/main/ofl/notocoloremoji/NotoColorEmoji-Regular.ttf
+  mv "$asset_tmp/emoji.ttf" assets/fonts/NotoColorEmoji-Regular.ttf
+fi
+.venv/bin/python scripts/check.py

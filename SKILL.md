@@ -19,12 +19,15 @@ Use os scripts na pasta desta skill e passe o caminho do vídeo bruto. Saída: M
 
 ## Passo a passo
 
-1. Rode `bash scripts/setup.sh` se faltar dependência. Veja os trechos de fala com `.venv/bin/python scripts/motion_edit.py VIDEO --print-segments`.
-2. Transcreva com `.venv/bin/python scripts/transcribe.py VIDEO --out words.json` e revise o texto.
+Rode todos os comandos **de dentro da pasta desta skill** (`cd` para ela) e use sempre `.venv/bin/python`. Coloque os arquivos de trabalho de cada vídeo (`words.json`, `scenes.json`, `sfx.json`, imagens, sons baixados, `output/`) numa pasta própria do vídeo, **fora da skill**, e passe os caminhos absolutos. Caminhos com espaço vão entre aspas.
+
+0. Verifique a instalação: `.venv/bin/python scripts/check.py`. Se a `.venv` não existir ou algum item falhar, rode `bash scripts/setup.sh` (uma vez só: leva alguns minutos e baixa ~200 MB) e verifique de novo. Se continuar falhando, mostre ao usuário a correção que o `check.py` indica.
+1. Veja os trechos de fala com `.venv/bin/python scripts/motion_edit.py VIDEO --print-segments`. O vídeo pode ter qualquer resolução vertical 9:16, porque a saída é sempre 720 × 1280.
+2. Transcreva com `.venv/bin/python scripts/transcribe.py VIDEO --out PASTA/words.json` (português por padrão; outra língua: `--lang en`). Revise o texto. A primeira vez baixa o modelo Whisper.
 3. Escreva o `scenes.json` (formato abaixo). Use o kit de marca (não defina `accent`).
 4. Efeitos sonoros (sempre coloque; veja "Efeitos sonoros" abaixo): busque com `python3 scripts/sfx.py search "whoosh"`, monte o `sfx.json` e mixe no render.
-5. Prévias: `.venv/bin/python scripts/motion_edit.py VIDEO --scenes scenes.json --guide --sample 2.5,7,11` (salva em `analysis/`). Confira se a cabeça não cobre gráficos e se nada passa de y≈740 acima do cartão. Se a pessoa estiver enquadrada diferente, ajuste `geom` no `scenes.json`.
-6. Render: `.venv/bin/python scripts/motion_edit.py VIDEO --scenes scenes.json --words words.json --sfx sfx.json --out output/final.mp4`.
+5. Prévias: `.venv/bin/python scripts/motion_edit.py VIDEO --scenes scenes.json --guide --sample 2.5,7,11` (salva em `analysis/`). Confira se a cabeça não cobre gráficos e se nada passa de y≈740 acima do cartão. O enquadramento é **automático**: o script mede a cabeça no vídeo e posiciona o rosto no cartão, no avatar e no PiP (ele imprime `Enquadramento automático: ...`). Só se a prévia mostrar a cabeça cortada ou fora do lugar, corrija com `geom` no `scenes.json` (ex.: `{"geom": {"card": {"oy": 520}}}`; `oy` maior sobe a pessoa). Para desligar a medição, use `"autoGeom": false`.
+6. Render: `.venv/bin/python scripts/motion_edit.py VIDEO --scenes PASTA/scenes.json --words PASTA/words.json --sfx PASTA/sfx.json --out PASTA/output/final.mp4`. Um vídeo de 1 minuto leva uns 10 minutos, então rode em segundo plano. Para um teste rápido, use `--max-frames 90`.
 7. Abra quadros do MP4 final e confira nitidez, sincronismo, legendas e áudio.
 
 ## Efeitos sonoros

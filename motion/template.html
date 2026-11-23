@@ -5,6 +5,7 @@
 @font-face{font-family:'SB';src:url('fonts/Inter-SemiBold.otf')}
 @font-face{font-family:'MD';src:url('fonts/Inter-Medium.otf')}
 @font-face{font-family:'SF';src:url('fonts/InstrumentSerif-Italic.ttf');font-style:italic}
+@font-face{font-family:'EMO';src:url('fonts/NotoColorEmoji-Regular.ttf')}
 :root{--a:#FD550A;--on-a:#fff;--ink:#0d0d0d;--red:#E5322D}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:720px;height:1280px;overflow:hidden;background:#fff}
@@ -27,11 +28,11 @@ html,body{width:720px;height:1280px;overflow:hidden;background:#fff}
 .light .tl,.light .tx{color:var(--ink)}
 .dark .tl,.dark .tx{color:#fff}
 .onvideo .tl,.onvideo .tx{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.45)}
-.sub{position:absolute;font-family:Menlo,'SF Mono',monospace;font-size:16px;letter-spacing:.3px;white-space:nowrap}
+.sub{position:absolute;font-family:Menlo,'SF Mono','DejaVu Sans Mono',monospace;font-size:16px;letter-spacing:.3px;white-space:nowrap}
 .light .sub{color:#6b6b70}.dark .sub,.onvideo .sub{color:#a3a3ad}
-.mono{font-family:Menlo,'SF Mono',monospace}
+.mono{font-family:Menlo,'SF Mono','DejaVu Sans Mono',monospace}
 .pill{position:absolute;white-space:nowrap;border-radius:12px;padding:10px 16px;font-family:'XB';font-size:23px;letter-spacing:-.4px;line-height:1.1}
-.emoji{font-family:'Apple Color Emoji',sans-serif;display:inline-block;vertical-align:-.06em;margin-right:7px}
+.emoji{font-family:'Apple Color Emoji','EMO','Noto Color Emoji',sans-serif;display:inline-block;vertical-align:-.06em;margin-right:7px}
 .pill.a,.pill.y{background:var(--a);color:var(--on-a)}
 .pill.w{background:#fff;color:var(--ink);box-shadow:0 6px 20px rgba(0,0,0,.13);border:1px solid rgba(0,0,0,.06)}
 .pill.k{background:#141416;color:#fff}
@@ -126,7 +127,7 @@ function build(sc,idx){
   if(sc.sub)add(mk('sub',escapeText(sc.sub),{top:(yy+12)+'px',...place()}),'slide',{delay:.25});
   (sc.texts||[]).forEach(x=>{
     const el=mk('tx abs',inl(x.text),{left:(x.x??48)+'px',top:x.y+'px',fontSize:(x.size||26)+'px',whiteSpace:'nowrap',
-      fontFamily:x.font==='mono'?"Menlo,monospace":x.font==='sf'?'SF':x.font==='sb'?'SB':'XB',fontStyle:x.font==='sf'?'italic':'normal',
+      fontFamily:x.font==='mono'?"Menlo,'DejaVu Sans Mono',monospace":x.font==='sf'?'SF':x.font==='sb'?'SB':'XB',fontStyle:x.font==='sf'?'italic':'normal',
       letterSpacing:x.font==='mono'?'0':'-.02em',...(x.color?{color:({accent:A,green:GREEN,yellow:YELLOW})[x.color]||x.color}:{})});
     if(x.align==='center'){el.style.left='0';el.style.width='720px';el.style.textAlign='center'}
     add(el,'slide',{delay:x.delay});

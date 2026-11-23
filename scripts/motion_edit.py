@@ -50,6 +50,72 @@ def make_cutouts(frames_dir, cuts_dir, idxs):
                 print(f"recorte {done}/{len(idxs)}", flush=True)
 
 
+def auto_geom(frames_dir, n_frames, samples=7):
+    """Mede onde está a cabeça (U2Net em alguns quadros) e calcula o enquadramento de
+    cada layout: no cartão, o topo da cabeça fica em y≈460 e o rosto centralizado; no
+    avatar e no PiP, o rosto preenche a janela. Devolve {} se não achar uma pessoa."""
+    import cv2, numpy as np, onnxruntime as ort
+    if not MODEL.exists():
+        return {}
+    sess = ort.InferenceSession(str(MODEL), providers=["CPUExecutionProvider"])
+    name = sess.get_inputs()[0].name
+    mean, std = np.array([0.485, 0.456, 0.406]), np.array([0.229, 0.224, 0.225])
+    tops, cxs, hws = [], [], []
+    for k in range(samples):
+        i = int((k + .5) * n_frames / samples)
+        img = cv2.imread(str(frames_dir / f"f{i + 1:05d}.jpg"))
+        if img is None:
+            continue
+        h, w = img.shape[:2]
+        x = cv2.resize(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), (320, 320), interpolation=cv2.INTER_AREA)
+        x = ((x.astype(np.float32) / 255. - mean) / std).transpose(2, 0, 1)[None].astype(np.float32)
+        m = cv2.resize(sess.run(None, {name: x})[0][0, 0], (w, h)) > .5
+        rows = np.where(m.sum(1) > w * .04)[0]
+        if len(rows) < h * .15:
+            continue
+        top = int(rows[0])
+        x0 = int(np.where(m[top + 3])[0].mean()) if m[top + 3].any() else w // 2
+        widths, centers = [], []
+        for y in range(top + int(h * .03), min(h, top + int(h * .11)), 4):
+            if not m[y, x0]:
+                continue
+            row = m[y]
+            l = x0 - np.argmin(row[x0::-1]) + 1 if not row[:x0].all() else 0
+            r = x0 + np.argmin(row[x0:]) if not row[x0:].all() else w
+            widths.append(r - l); centers.append((l + r) / 2)
+            x0 = int((l + r) / 2)          # segue o centro da cabeça, ignora objetos ao lado
+        if len(widths) < 3:
+            continue
+        tops.append(top); cxs.append(float(np.median(centers))); hws.append(float(np.median(widths)))
+    if len(tops) < 2:
+        return {}
+    ht, cx, hw = float(np.median(tops)), float(np.median(cxs)), float(np.median(hws))
+    hw = min(max(hw, 120), 520)
+    fy = ht + .8 * hw                      # centro aproximado do rosto
+    clamp = lambda v, a, b: min(max(v, a), b)
+
+    def window(x, y, w, h, s, tx, ty, r, bw):
+        ox = clamp(cx * s - tx, 0, max(0, 720 * s - w))
+        oy = clamp(fy * s - ty if ty is not None else 0, 0, max(0, 1280 * s - h))
+        return dict(x=x, y=y, w=w, h=h, r=r, s=round(s, 3), ox=round(ox, 1), oy=round(oy, 1), bw=bw)
+
+    # cartão: topo da cabeça em y=460, quadro cobrindo o cartão até o pé do vídeo
+    s = clamp(max(.92, 820 / max(1280 - ht, 1)), .92, 1.5)
+    card = window(83, 666, 554, 700, s, 277, None, 28, 2.5)
+    card["oy"] = round(clamp(206 + ht * s, 0, 666 + 1280 * s - 1280), 1)
+    avatar_s = clamp(100 / hw, .2, .7)
+    pip_s = clamp(118 / hw, .35, 1)
+    geom = {
+        "card": card,
+        "avatar": window(552, 150, 128, 128, avatar_s, 64, 64, 64, 3),
+        "pip": window(400, 330, 280, 350, pip_s, 140, 150, 26, 2.5),
+        "pipL": window(40, 330, 280, 350, pip_s, 140, 150, 26, 2.5),
+    }
+    geom["none"] = {**geom["avatar"], "x": 616, "y": 214, "w": 0, "h": 0, "r": 0, "bw": 0}
+    print(f"Enquadramento automático: topo da cabeça y={ht:.0f}, centro x={cx:.0f}, largura {hw:.0f}px")
+    return geom
+
+
 def trimmed_map(segs):
     """[(orig_a, orig_b, trimmed_start)]"""
     out, acc = [], 0.0
@@ -207,6 +273,12 @@ def main():
         n = len(list(fr.glob("f*.jpg")))
         if not n:
             raise SystemExit("O vídeo não gerou quadros.")
+        # enquadramento: medido no vídeo; "geom" do scenes.json ainda tem a palavra final
+        auto = auto_geom(fr, n) if cfg.get("autoGeom", True) else {}
+        user = cfg.get("geom", {})
+        cfg["geom"] = {k: {**auto.get(k, {}), **user.get(k, {})} for k in set(auto) | set(user)}
+        if not auto and cfg.get("autoGeom", True):
+            print("Aviso: não encontrei a pessoa nos quadros; usando o enquadramento padrão.")
         if a.max_frames:
             n = min(n, a.max_frames)
 
