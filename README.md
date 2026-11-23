@@ -1,6 +1,6 @@
 # SKILL RECORTE RETANGULO
 
-Skill do Codex para editar vídeos falados verticais. Aplica cartão arredondado com borda amarela e cabeça saliente, motion graphics, legendas nítidas, corte de pausas e efeitos do Openverse.
+Skill para editar vídeos falados verticais. Aplica cartão arredondado com borda fina na cor de destaque e cabeça saliente, avatar em círculo, PiP, motion graphics, legendas nítidas, corte de pausas e efeitos sonoros do Real SFX (uisfx, CC0, local) e do Openverse.
 
 ## Instalação
 

@@ -1,10 +1,42 @@
-[
+{
+ 
+ "emph": {
+  "pronto": "serif"
+ },
+ "scenes": [
   {
-    "segs": [0],
-    "layout": "light",
-    "text": "Tudo começa com uma ideia.",
-    "title": "Tudo começa|com uma {ideia}",
-    "titleY": 181,
-    "pills": [{"text": "Primeiro passo", "emoji": "💡", "style": "y", "x": 62, "y": 410}]
+   "segs": [
+    0
+   ],
+   "layout": "light",
+   "text": "Tudo começa com uma ideia.",
+   "title": "Tudo começa com {*uma ideia*}",
+   "sub": "primeiro passo · antes de gravar",
+   "pills": [
+    {
+     "text": "ideia",
+     "emoji": "💡",
+     "style": "w",
+     "x": 250,
+     "y": 300
+    }
+   ]
+  },
+  {
+   "segs": [
+    1
+   ],
+   "layout": "graphic",
+   "text": "...",
+   "card": {
+    "type": "counter",
+    "label": "custo por mês",
+    "prefix": "R$ ",
+    "value": 75,
+    "unit": "/mês",
+    "caption": "plano Standard",
+    "y": 320
+   }
   }
-]
+ ]
+}
