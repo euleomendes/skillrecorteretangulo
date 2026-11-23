@@ -124,6 +124,7 @@ def auto_geom(frames_dir, n_frames, samples=7):
         "avatar": window(500, 126, 184, 184, avatar_s, 92, 92, 92, 3.5),
         "pip": window(400, 330, 280, 350, pip_s, 140, 150, 26, 2.5),
         "pipL": window(40, 330, 280, 350, pip_s, 140, 150, 26, 2.5),
+        "split": window(0, 0, 720, 640, clamp(290 / hw, .75, 1.6), 360, 330, 0, 5),
     }
     geom["none"] = {**geom["avatar"], "x": 592, "y": 218, "w": 0, "h": 0, "r": 0, "bw": 0}
     print(f"Enquadramento automático: topo da cabeça y={ht:.0f}, centro x={cx:.0f}, largura {hw:.0f}px")
@@ -313,6 +314,12 @@ def main():
         for sc in scenes:
             for m in sc.get("images", []):
                 m["src"] = local(m["src"])
+            if sc.get("bgImage"):
+                sc["bgImage"] = local(sc["bgImage"])
+            for c in [sc.get("card") or {}]:
+                for key in ("src", "file"):
+                    if c.get(key):
+                        c[key] = local(c[key])
             card = sc.get("card") or {}
             if card.get("avatar"):
                 card["avatar"] = local(card["avatar"])

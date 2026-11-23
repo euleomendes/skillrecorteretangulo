@@ -18,6 +18,22 @@ Use os scripts na pasta desta skill e passe o caminho do vídeo bruto. Saída: M
 - **Tem que chamar atenção pela arte.** Toda cena precisa de pelo menos um elemento que se mexe junto da fala: logo, foto real, celular, gráfico, notificação, partículas ou tipografia cinética. Uma cena só com título e legenda não basta. Veja "Motion graphics" abaixo.
 - **Legendas**: brancas, 1–2 palavras, sombra suave, centro em y≈0,765. Palavras-chave em SERIFA ITÁLICA MAIÚSCULA, em laranja ou em pílula. Nas cenas sem rosto em fundo claro a legenda ganha caixa escura.
 
+## Variedade: cada vídeo com cara própria
+
+Não repita a fórmula. Antes de escrever o `scenes.json`, escolha uma **receita** que combine com o assunto e, se houver edições anteriores na pasta de trabalho, use uma receita ou uma sequência de layouts diferente da última. Misture no máximo 2 receitas por vídeo.
+
+| Receita | Quando | Layouts e recursos | Transições |
+|---|---|---|---|
+| **Editorial** | dicas, carreira, opinião | `light`/`dark` (cartão), `graphic` com avatar, polaroids, listas, carimbo | círculo (padrão), `swipe` |
+| **Tech / notícia** | tecnologia, IA, apps, novidades | `"theme": "grid"`, `full` com `hud`, `window` (navegador), `split`, celular, notificações | `glitch`, `zoom`, `whip` |
+| **Pop / colagem** | lifestyle, humor, frases fortes | `cutout` sobre `bgColor` (laranja, verde, amarelo, preto) ou `bgImage`, `bigword` atrás da pessoa, fotos, partículas | `whip`, `swipe`, `zoom` |
+
+Regras:
+- No máximo 2 cenas seguidas com o mesmo layout, e no máximo 3 cenas de cartão (`light`/`dark`) por vídeo.
+- Pelo menos 3 tipos de transição diferentes por vídeo.
+- Use pelo menos uma vez um fundo colorido (`bgColor`) ou uma palavra gigante (`bigword`), a não ser na receita Editorial pura.
+- Varie a posição dos títulos: centro, esquerda, embaixo (em `split`) ou atrás da pessoa (`bigword`).
+
 ## Passo a passo
 
 Rode todos os comandos **de dentro da pasta desta skill** (`cd` para ela) e use sempre `.venv/bin/python`. Coloque os arquivos de trabalho de cada vídeo (`words.json`, `scenes.json`, `sfx.json`, imagens, sons baixados, `output/`) numa pasta própria do vídeo, **fora da skill**, e passe os caminhos absolutos. Caminhos com espaço vão entre aspas.
@@ -53,7 +69,7 @@ Inspirado nos modelos do prompt-motion.com. Regras de movimento:
 | Partículas | `bursts:[{x, y, at, n, emoji?, colors?, mode:"rise"?, dur?}]`: confete/emoji estourando ou corações subindo | dinheiro, curtidas, conquista, CTA |
 | Cursor | `cursor:[{x, y, at, click}]`, ou automático com `clickAt` no `phone` e no `follow` | botões, "me segue" |
 | Punch-in | em `full`: `punch:[{at, s:1.15}]` (`punchY` ajusta o centro) | ênfase no rosto |
-| Transição | `transition:"swipe"` (faixa diagonal nas cores da marca) ou `"pixels"` | mudança de assunto |
+| Transição | `transition`: `swipe` (faixa diagonal), `whip` (chicote com desfoque), `zoom` (zoom com desfoque), `glitch` (faixas digitais e tremor), `pixels` | mudança de assunto |
 
 **Celular** (`card.type:"phone"`): `{x, y, w (largura, padrão 320), rot, delay, handle, name, bio, from, to, countAt, countDur, posts: [imagens ou emojis, até 9], gridAt, clickAt, button?, buttonDone?, likeAt?, likeTile?, notifs:[{logo, text, at}], avatar?}`. O avatar mostra o rosto ao vivo do vídeo, a contagem de seguidores sobe e o botão "Seguir" é clicado por um cursor em `clickAt`.
 
@@ -125,13 +141,21 @@ Ritmo: de 3 a 9 sons por 10 s (sons em camada a menos de 80 ms contam como um). 
 
 Uma lista simples de cenas também funciona.
 
-**Cena**: `segs` (índices dos trechos de fala), `text`, `layout`, e opcionalmente `start` (segundos no vídeo editado), `plain` (corte seco sem recorte), `transition: "pixels"` e `capBox` (força ou desliga a caixa da legenda).
+**Cena**: `segs` (índices dos trechos de fala), `text`, `layout`, e opcionalmente `start` (segundos no vídeo editado; permite dividir um trecho longo em duas cenas com o mesmo `segs`), `plain` (corte seco sem recorte), `transition` (`pixels`, `swipe`, `whip`, `zoom`, `glitch`), `kick: false` e `capBox` (força ou desliga a caixa da legenda).
 
 **Layouts**:
 - `light` / `dark`: cartão com a cabeça saliente.
 - `graphic`: sem cartão, rosto num círculo de 184 px no canto superior direito (x 500–684, y 126–310). Comece os gráficos abaixo de y≈320 à direita e mantenha os títulos à esquerda. Use `bg: "light"` para fundo branco e `avatar: false` para esconder o rosto.
 - `pip` / `pipL`: rosto numa janela à direita/esquerda (y 330–680). Use `bg` como em `graphic`.
 - `full`: rosto em tela cheia. Pílulas por volta de y 780–860.
+- `cutout`: a pessoa recortada (corpo inteiro) sobre um fundo próprio: `bgColor` (`accent`, `green`, `yellow` ou hex) ou `bgImage` (foto com zoom lento e sombreado; `bgShade` muda o sombreado). Ajuste com `personScale`, `personX` e `personY`. Combine com `bigword` para o texto aparecer **atrás** da pessoa. A cabeça fica entre y≈250 e 560, então a palavra gigante vai em y≈110–200.
+- `split`: rosto na metade de cima (y 0–640, linha laranja embaixo) e conteúdo na metade de baixo (y 660–940). Use `bgColor` para a cor da metade de baixo.
+
+**Fundo por cena**: qualquer layout aceita `bgColor` ou `bgImage`. A cor do texto (claro/escuro) se ajusta sozinha.
+
+**Palavra gigante** (`bigword`): `{text ("|" quebra a linha), y, size (≈150–220), color, style?: "outline", delay, rot?}`. Fica atrás da pessoa e entra com impacto.
+
+**Tema** (no topo do `scenes.json`): `"theme": "dots"` (padrão), `"grid"` (linhas técnicas) ou `"plain"`.
 
 **Texto**: `title` (`|` quebra a linha, `{x}` serifa itálica, `*x*` cor de destaque, `[x]` marca-texto amarelo, combináveis como `{*x*}` ou `[{x}]`), `marks`, `titleDelay`, `titleY`, `titleSize`, `titleAlign` (`center` | `left`), `titleX`, `sub` (linha mono), `texts` (lista `{text, x, y, size, font: xb|sb|sf|mono, color: "accent"|"green"|"yellow"|hex, align, delay}`).
 
@@ -145,6 +169,8 @@ Uma lista simples de cenas também funciona.
 - `bars`: `{y, rows: [{label, w, style?: "muted"}]}`.
 - `bigicon` `{emoji, x, y}`, `stamp` `{text, stamp, stampAt, y}`, `camicon` `{emoji?, x, y}`, `nameplate` `{initials, name, role, y}`, `follow` `{text, y, delay?, clickAt?}`.
 - `phone`, `notifs`, `chart`, `kinetic`: veja "Motion graphics".
+- `window`: janela de navegador/app `{x, y, w, h, url, title?, hint?, icon?, src? (imagem dentro), file? + fileAt (imagem que cai na área de upload), scanAt? + scanDur (linha escaneando), result?: {text, emoji, style, at, size, anim}}`.
+- `hud`: cantoneiras de detecção sobre o rosto ou um objeto `{x, y, w, h, delay, label ("ANALISANDO"), result ("IA {v}%"), value, valueAt, color?, scan?}`. Em `full`, o rosto fica por volta de x 200–520, y 210–610.
 
 `delay` é contado em segundos a partir do início da cena. Sincronize com a palavra falada usando os tempos do `words.json`.
 
