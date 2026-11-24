@@ -169,6 +169,20 @@ def norm(word):
     return re.sub(r"[^\w%$]", "", word.lower())
 
 
+# Formatos nomeados (docs/formatos.jpg). Cada um tem fundo e destaque próprios;
+# qualquer chave escrita no scenes.json sobrescreve o padrão do formato.
+FORMATS = {
+    "classico": {"theme": "dots"},
+    "prints": {"accent": "#015D47", "capAccent": "#FD550A", "theme": "dots"},
+    "lima": {"accent": "#E0F354", "yellow": "#FD550A", "theme": "grid",
+             "bgDark": "#0A0A0B", "glow": "#E0F354", "glowAlpha": 0.08},
+    "tech": {"accent": "#7DD3FC", "theme": "grid", "bgDark": "#060B1E",
+             "glow": "#2563EB", "glowAlpha": 0.45, "squares": "#7DD3FC"},
+    "pop": {"accent": "#E0F354", "theme": "plain", "bgDark": "#FD550A",
+            "glowAlpha": 0, "squares": "none"},
+}
+
+
 def build_ass_motion(words, cap, W, H, path, accent, emph, box_spans):
     """Legendas no estilo das referências: 1–2 palavras, ênfase em serifa itálica
     maiúscula ("serif"), cor de destaque ("accent") ou pílula ("pill"), e caixa escura
@@ -249,8 +263,12 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     raw = json.loads(a.scenes.read_text())
     cfg = {k: v for k, v in raw.items() if k != "scenes"} if isinstance(raw, dict) else {}
+    fmt = str(cfg.get("format", "")).lower().replace("á", "a")
+    if fmt and fmt not in FORMATS:
+        ap.error(f"format desconhecido: {fmt} (use {', '.join(FORMATS)})")
+    cfg = {**FORMATS.get(fmt, {}), **cfg}
     scenes = raw["scenes"] if isinstance(raw, dict) else raw
-    accent = cfg.get("accent", "#FD550A")
+    accent = cfg.get("capAccent", cfg.get("accent", "#FD550A"))
     if not scenes or any(not sc.get("segs") or any(not 0 <= i < len(segs) for i in sc["segs"])
                          for sc in scenes):
         ap.error("--scenes deve listar trechos de fala existentes")
