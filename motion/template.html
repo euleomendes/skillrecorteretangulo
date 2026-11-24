@@ -140,6 +140,7 @@ const IG_GRAD='radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 
 // logo oficial (Simple Icons) como ícone de app; plain = só o símbolo na cor da marca
 function logoHTML(name,sz,o={}){
   const d=LOGOS[name];if(!d)return '';
+  if(d.img){const r=o.plain?sz*.22:sz*.26;return '<span class="lt" style="width:'+sz+'px;height:'+sz+'px;border-radius:'+r+'px;background:#fff url('+d.img+') center/cover;box-shadow:0 0 0 1px rgba(0,0,0,.08)"></span>'}
   const light=lum(d.hex)>.5, white=o.tile==='white';
   const bg=white?'#fff':name==='instagram'?IG_GRAD:d.hex;
   const gl=o.plain||white?(name==='instagram'&&white?'#d6249f':d.hex):(light?'#0d0d0d':'#fff');

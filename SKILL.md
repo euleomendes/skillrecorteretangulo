@@ -90,18 +90,37 @@ Inspirado nos modelos do prompt-motion.com. Regras de movimento:
 
 **Celular** (`card.type:"phone"`): `{x, y, w (largura, padrão 320), rot, delay, handle, name, bio, from, to, countAt, countDur, posts: [imagens ou emojis, até 9], gridAt, clickAt, button?, buttonDone?, likeAt?, likeTile?, notifs:[{logo, text, at}], avatar?}`. O avatar mostra o rosto ao vivo do vídeo, a contagem de seguidores sobe e o botão "Seguir" é clicado por um cursor em `clickAt`.
 
-## Fotos reais e logos
+## Fotos reais, logos e material oficial
+
+Quando a fala cita uma marca, um app ou um anúncio (TikTok, CapCut, Instagram, Meta, ChatGPT…), **mostre a coisa real**: o logo oficial, as telas do app, a imagem do anúncio no site oficial e um print da página. Faça isso em toda cena que cite um produto. É o que deixa o vídeo crível.
 
 ```
-python3 scripts/images.py logos                                     # 30 logos oficiais (Simple Icons, CC0)
-python3 scripts/images.py search "ring light" --limit 8             # Wikimedia Commons + Openverse, CC0/domínio público
-python3 scripts/images.py fetch URL pasta-do-video/img/ringlight.jpg   # baixa e converte para JPG
+# logos
+python3 scripts/images.py logos                          # logos já disponíveis
+.venv/bin/python scripts/images.py logo capcut           # adiciona qualquer marca: vetor do Simple Icons (3 mil+)
+                                                         # ou, se não houver, o ícone oficial do app (App Store)
+# material oficial
+python3 scripts/images.py official tiktok                # site, newsroom, blog e central de ajuda oficiais da marca
+python3 scripts/images.py app "capcut" --fetch PASTA/img --n 6     # ícone + telas oficiais do app (App Store, 1290 px)
+.venv/bin/python scripts/images.py page URL --fetch PASTA/img --n 6  # imagens do anúncio/página oficial (og:image + fotos grandes)
+.venv/bin/python scripts/images.py shot URL PASTA/img/print.jpg [--desktop] [--full]  # print real da página
+# fotos livres (ilustração genérica)
+python3 scripts/images.py search "ring light" --limit 8  # Wikimedia Commons + Openverse, CC0/domínio público
+python3 scripts/images.py fetch URL PASTA/img/foto.jpg
 ```
 
-- Busque fotos em inglês e baixe só as escolhidas para `img/` da pasta do vídeo. No `scenes.json`, use o caminho relativo (`"img/ringlight.jpg"`).
-- Abra as fotos antes de usar: o acervo tem de tudo, então confira se a imagem mostra mesmo o que a fala diz.
-- Por padrão só vêm fotos CC0 ou de domínio público. Com `--allow-cc-by`, ponha o `credit` de cada foto na legenda do post.
-- Os logos servem para citar a plataforma. Não os use para sugerir parceria ou patrocínio que não existe.
+**Como usar:**
+1. Para cada marca citada, rode `images.py logo NOME` (uma vez; fica salvo na skill) e use em `logos`/pílulas com `"logo": "nome"`.
+2. Se a fala é sobre um **anúncio ou recurso novo**, ache a página oficial (comece por `images.py official MARCA`; para o anúncio específico, pesquise na web restringindo ao domínio oficial, ex.: `site:newsroom.tiktok.com centro de transparência`). Leia a página e baixe as imagens com `page --fetch` ou tire um print com `shot`.
+3. Para mostrar **o app**, use `app --fetch`. As telas da App Store já vêm com arte de divulgação: use como imagem solta com `r` e sombra ou como polaroid, **não** dentro de `frame: "phone"` (fica celular dentro de celular). Para um print do site, aí sim use `frame: "phone"` (print `--mobile`) ou `window` (print `--desktop`).
+4. **Informação oficial**: tire da página oficial os dados que reforçam a fala (nome exato do recurso, data, números, países, requisitos) e coloque na tela como pílula, lista, contador ou `notifs`. Nunca invente número: só o que está na fonte. Mostre a fonte numa pílula discreta (`{"text": "Fonte: newsroom.tiktok.com", "logo": "tiktok", "style": "w", "size": 20}`) na cena em que o dado aparece.
+5. Abra todas as imagens antes de usar e confira se mostram mesmo o que a fala diz. Recorte com `pos` o trecho que importa.
+
+**Regras:**
+- O material oficial (logos, telas, imagens de newsroom e prints) pertence às marcas. Use-o para **informar e comentar** o produto, citando a fonte, nunca para sugerir parceria ou patrocínio. Os ícones de app baixados ficam fora do git (`assets/logos/*.jpg`).
+- Fotos livres vêm CC0/domínio público por padrão. Com `--allow-cc-by`, ponha o `credit` na legenda do post.
+- Se a página pedir login ou bloquear o acesso, não insista: use outra página oficial ou o `app`.
+- Recuse avisos de cookies não essenciais (o `shot` já tenta clicar em "Recusar").
 
 ## Efeitos sonoros
 

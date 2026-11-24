@@ -6,7 +6,7 @@ Skill para editar vídeos falados verticais (Reels, Shorts, TikTok). Faz:
 - avatar em círculo, PiP e tela cheia;
 - fundo branco pontilhado ou escuro com brilho;
 - motion graphics: celular com perfil animado, notificações, gráfico que se desenha, tipografia cinética, partículas, cursor clicando, marca-texto, punch-in;
-- fotos reais (Wikimedia Commons e Openverse, CC0) e 30 logos oficiais de plataformas;
+- fotos reais (Wikimedia Commons e Openverse, CC0), logos oficiais de qualquer marca (Simple Icons ou ícone do app) e material oficial: telas do app na App Store, imagens de newsroom e prints de páginas oficiais;
 - legendas curtas com ênfase em serifa itálica;
 - corte de pausas;
 - efeitos sonoros com gravações reais: kit de 25 sons do Freesound (CC0, incluso) e busca no Openverse; mixagem encaixada pelo pico/ataque, com ducking sob a voz.
@@ -65,4 +65,5 @@ cd ~/.claude/skills/skill-recorte-retangulo && git pull && bash scripts/setup.sh
 - Sons sintetizados uisfx (opcionais): CC0 (`sfx/realsfx/LICENSE-AUDIO`).
 - Efeitos do Openverse: confira a licença de cada um. CC BY exige crédito.
 - Logos: Simple Icons 16.38.1 (CC0, `assets/logos`). As marcas pertencem aos donos; use só para citar a plataforma.
+- Material oficial (ícones e telas de apps, imagens e prints de sites oficiais): pertence às marcas; use para informar e comentar, citando a fonte. Não é versionado.
 - Fotos do Wikimedia Commons e do Openverse: CC0/domínio público por padrão. Com `--allow-cc-by`, dê o crédito indicado.

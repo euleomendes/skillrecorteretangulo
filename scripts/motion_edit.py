@@ -29,6 +29,11 @@ def load_logos():
         if m:
             info = meta.get(f.stem, {})
             out[f.stem] = {"p": m.group(1), "hex": info.get("hex", "#0d0d0d"), "title": info.get("title", f.stem)}
+    import base64
+    for f in sorted(folder.glob("*.jpg")):  # ícones oficiais de apps (images.py logo NOME)
+        if f.stem not in out:
+            out[f.stem] = {"img": "data:image/jpeg;base64," + base64.b64encode(f.read_bytes()).decode(),
+                           "hex": "#ffffff", "title": meta.get(f.stem, {}).get("title", f.stem)}
     return out
 
 

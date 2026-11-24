@@ -8,3 +8,6 @@ analysis/motion_*.png
 analysis/*_contact.jpg
 assets/fonts/*.otf
 assets/fonts/*.ttf
+
+# ícones de apps baixados por images.py logo (marcas registradas, não redistribuir)
+assets/logos/*.jpg

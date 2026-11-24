@@ -14,6 +14,18 @@
   "hex": "#000000",
   "source": "https://www.apple.com"
  },
+ "canva": {
+  "title": "Canva: editor de fotos e vídeo",
+  "hex": "#ffffff",
+  "source": "https://apps.apple.com/br/app/canva-editor-de-fotos-e-v%C3%ADdeo/id897446215?uo=4",
+  "kind": "app-icon"
+ },
+ "capcut": {
+  "title": "CapCut - Editor de vídeo",
+  "hex": "#ffffff",
+  "source": "https://apps.apple.com/br/app/capcut-editor-de-v%C3%ADdeo/id1500855883?uo=4",
+  "kind": "app-icon"
+ },
  "claude": {
   "title": "Claude",
   "hex": "#D97757",
