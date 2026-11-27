@@ -226,8 +226,8 @@ FORMATS = {
              "bgDark": "#0A0A0B", "glow": "#E0F354", "glowAlpha": 0.08},
     "tech": {"accent": "#7DD3FC", "theme": "grid", "bgDark": "#060B1E",
              "glow": "#2563EB", "glowAlpha": 0.45, "squares": "#7DD3FC"},
-    "pop": {"accent": "#E0F354", "theme": "plain", "bgDark": "#FD550A",
-            "glowAlpha": 0, "squares": "none"},
+    "pop": {"accent": "#E0F354", "theme": "dots", "bgDark": "#C2410C",
+            "glow": "#FF8A3D", "glowAlpha": 0.75, "squares": "#E0F354"},
 }
 
 
