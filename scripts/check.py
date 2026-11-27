@@ -58,6 +58,8 @@ if platform.system() != "Darwin":
 
 model = ROOT / "models" / "u2net_human_seg.onnx"
 item(model.is_file() and model.stat().st_size == 175997641, "modelo de recorte U2Net", "rode `bash scripts/setup.sh`")
+rvm = ROOT / "models" / "rvm_mobilenetv3_fp32.onnx"
+item(rvm.is_file() and rvm.stat().st_size == 14975696, "modelo de recorte de vídeo RVM", "rode `bash scripts/setup.sh`")
 item((ROOT / "analysis" / "style_profile.json").is_file(), "perfil de estilo (analysis/style_profile.json)",
      "restaure o arquivo do repositório")
 

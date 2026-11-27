@@ -36,7 +36,7 @@ cd ~/.claude/skills/skill-recorte-retangulo && bash scripts/setup.sh
 
 Para um projeto só, clone em `.claude/skills/skill-recorte-retangulo` dentro do projeto e rode o setup lá.
 
-O setup instala as bibliotecas com versões fixas, o Chromium, as fontes, a fonte de emoji (fora do macOS) e o modelo de recorte U2Net. No fim, ele roda a verificação. Para conferir de novo a qualquer momento:
+O setup instala as bibliotecas com versões fixas, o Chromium, as fontes, a fonte de emoji (fora do macOS) e os modelos de recorte: RVM (Robust Video Matting, GPL-3.0, recorte de vídeo com cabelo fio a fio e borda estável) e U2Net (enquadramento automático e reserva). No fim, ele roda a verificação. Para conferir de novo a qualquer momento:
 
 ```bash
 .venv/bin/python scripts/check.py

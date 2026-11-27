@@ -16,6 +16,7 @@ import apply_edit as AE
 
 FPS = 30
 MODEL = ROOT / "models" / "u2net_human_seg.onnx"
+RVM = ROOT / "models" / "rvm_mobilenetv3_fp32.onnx"   # recorte de vídeo (cabelo e borda estável)
 IMG_EXT = re.compile(r"\.(jpe?g|png|webp|gif|svg)$", re.I)
 
 
@@ -37,8 +38,50 @@ def load_logos():
     return out
 
 
+def make_cutouts_rvm(frames_dir, cuts_dir, idxs):
+    """Recorte com Robust Video Matting: processa os quadros em ordem e guarda a memória
+    entre eles, por isso a borda não treme e o cabelo sai fio a fio. Usa a cor "limpa"
+    (fgr) do modelo, que tira o halo do fundo antigo. Antes de cada trecho aquece com
+    até 12 quadros anteriores."""
+    import cv2, numpy as np, onnxruntime as ort
+    so = ort.SessionOptions(); so.intra_op_num_threads = min(6, os.cpu_count() or 2)
+    sess = ort.InferenceSession(str(RVM), so, providers=["CPUExecutionProvider"])
+    cuts_dir.mkdir(exist_ok=True)
+    zero = [np.zeros((1, 1, 1, 1), np.float32)] * 4
+    rec, last, done, want = zero, None, 0, set(idxs)
+    order = []
+    for i in sorted(idxs):
+        if last is None or i - last > 1:
+            order += [(j, True) for j in range(max(0, i - 12, (last or -1) + 1), i)]
+        order.append((i, False)); last = i
+    prev, dr = None, None
+    for i, warm in order:
+        img = cv2.imread(str(frames_dir / f"f{i + 1:05d}.jpg"))
+        if img is None:
+            continue
+        if prev is None or i - prev > 1:
+            rec = zero
+        prev = i
+        if dr is None:
+            dr = np.array([min(1.0, 512 / max(img.shape[:2]))], np.float32)
+        src = (cv2.cvtColor(img, cv2.COLOR_BGR2RGB).astype(np.float32) / 255).transpose(2, 0, 1)[None]
+        fgr, pha, *rec = sess.run(None, {"src": src, "r1i": rec[0], "r2i": rec[1], "r3i": rec[2],
+                                         "r4i": rec[3], "downsample_ratio": dr})
+        if warm:
+            continue
+        a = pha[0, 0]
+        fg = (fgr[0].transpose(1, 2, 0) * 255).clip(0, 255).astype(np.uint8)
+        a8 = (np.clip((a - .04) / .92, 0, 1) * 255).astype(np.uint8)
+        cv2.imwrite(str(cuts_dir / f"f{i + 1:05d}.png"), np.dstack([cv2.cvtColor(fg, cv2.COLOR_RGB2BGR), a8]))
+        done += 1
+        if done % 100 == 0:
+            print(f"recorte {done}/{len(want)}", flush=True)
+
+
 def make_cutouts(frames_dir, cuts_dir, idxs):
-    """Recorte da pessoa (U2Net human seg) -> PNG RGBA por quadro."""
+    """Recorte da pessoa: RVM se o modelo existir; senão U2Net human seg -> PNG RGBA por quadro."""
+    if RVM.exists() and os.environ.get("CUTOUT", "rvm") == "rvm":
+        return make_cutouts_rvm(frames_dir, cuts_dir, idxs)
     import cv2, numpy as np, onnxruntime as ort
     if not MODEL.exists():
         raise SystemExit(f"Modelo de recorte ausente: {MODEL}\nRode scripts/setup.sh (baixa u2net_human_seg.onnx).")

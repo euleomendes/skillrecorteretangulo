@@ -184,12 +184,14 @@ Uma lista simples de cenas também funciona.
 - `graphic`: sem cartão, rosto num círculo de 184 px no canto superior direito (x 500–684, y 126–310). Comece os gráficos abaixo de y≈320 à direita e mantenha os títulos à esquerda. Use `bg: "light"` para fundo branco e `avatar: false` para esconder o rosto.
 - `pip` / `pipL`: rosto numa janela à direita/esquerda (y 330–680). Use `bg` como em `graphic`.
 - `full`: rosto em tela cheia. Pílulas por volta de y 780–860.
-- `cutout`: a pessoa recortada (corpo inteiro) sobre um fundo próprio: `bgColor` (`accent`, `green`, `yellow` ou hex) ou `bgImage` (foto com zoom lento e sombreado; `bgShade` muda o sombreado). Ajuste com `personScale`, `personX` e `personY`. Combine com `bigword` para o texto aparecer **atrás** da pessoa. A cabeça fica entre y≈250 e 560, então a palavra gigante vai em y≈110–200.
+- `cutout`: a pessoa recortada (corpo inteiro) sobre um fundo próprio: `bgColor` (`accent`, `green`, `yellow` ou hex) ou `bgImage` (foto com zoom lento e sombreado; `bgShade` muda o sombreado). Ajuste com `personScale`, `personX` e `personY`. Combine com `bigword` para o texto aparecer **atrás** da pessoa. A cabeça fica entre y≈250 e 560, então a palavra gigante vai em y≈110–200. O recorte usa o RVM (feito para vídeo: cabelo fio a fio, sem halo e sem tremer); para voltar ao U2Net antigo, rode com `CUTOUT=u2net`.
 - `split`: rosto na metade de cima (y 0–640, linha laranja embaixo) e conteúdo na metade de baixo (y 660–940). Use `bgColor` para a cor da metade de baixo.
 
 **Fundo por cena**: qualquer layout aceita `bgColor` ou `bgImage`. A cor do texto (claro/escuro) se ajusta sozinha.
 
 **Palavra gigante** (`bigword`): `{text ("|" quebra a linha), y, size (≈150–220), color, style?: "outline", delay, rot?}`. Fica atrás da pessoa e entra com impacto.
+
+**Type Wall** (`wall`): a tela inteira atrás da pessoa vira um paredão de palavras gigantes que andam para os lados (linhas alternam letra cheia e contorno, sentidos opostos) e todas as linhas trocam para a palavra falada, em cascata de cima para baixo. Use num `cutout` com `bgColor`, de preferência na chamada final. `{words: [{text, at}], size (≈150), color, color2 (cor do contorno), period (segundos por volta, ≈7), delay?, gap? (altura da linha ÷ size, 0,9)}`. `at` é o segundo da palavra a partir do início da cena (tire do `words.json`). A linha na altura da legenda fica apagada sozinha. Ponha um whoosh baixo (−30 dB) em cada troca. POP: `color` branco e `color2` preto; TECH: `color` `accent` e `color2` `yellow`.
 
 **Tema** (no topo do `scenes.json`): `"theme": "dots"` (padrão), `"grid"` (linhas técnicas) ou `"plain"`.
 

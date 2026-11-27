@@ -40,6 +40,13 @@ if [[ ! -s models/u2net_human_seg.onnx ]]; then
   test "$(wc -c < "$tmp" | tr -d " ")" -eq 175997641
   mv "$tmp" models/u2net_human_seg.onnx
 fi
+if [[ ! -s models/rvm_mobilenetv3_fp32.onnx ]]; then
+  tmp="$asset_tmp/rvm.onnx"
+  curl --fail --location --retry 2 -o "$tmp" \
+    https://github.com/PeterL1n/RobustVideoMatting/releases/download/v1.0.0/rvm_mobilenetv3_fp32.onnx
+  test "$(wc -c < "$tmp" | tr -d " ")" -eq 14975696
+  mv "$tmp" models/rvm_mobilenetv3_fp32.onnx
+fi
 # emojis: o macOS já tem Apple Color Emoji; nos outros sistemas baixa a Noto Color Emoji (OFL)
 if [[ "$(uname)" != "Darwin" && ! -s assets/fonts/NotoColorEmoji-Regular.ttf ]]; then
   curl -fLsS --retry 2 -o "$asset_tmp/emoji.ttf" \
